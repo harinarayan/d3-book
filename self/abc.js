@@ -28,12 +28,6 @@ ChangesAndEffects.prototype.init = function(){
 		.attr("width", self.w)
 		.attr("transform", "translate(" + self.margin_x + ", " + self.margin_y + ")");
 
-	self.severity_g = self.plotarea.append('g')
-		.classed("severity", true);
-	self.changes_g = self.plotarea.append('g')
-		.classed("changes", true);
-	
-
 	self.colorGen = d3.scaleOrdinal(
 	[
 	  "#8dd3c7",
@@ -59,7 +53,8 @@ ChangesAndEffects.prototype.generate_series = function(){
 	});
 	var stack = d3.stack()
 		.keys(self.series_keys)
-		.order(d3.stackOrderDescending);
+		//.order(d3.stackOrderDescending)
+		;
 	//console.log(stack(list_of_counts));
 	layers = stack(list_of_counts).map(function(d, i){
 		return {series_key: self.series_keys[i], layer: d}
@@ -105,7 +100,7 @@ ChangesAndEffects.prototype.render = function(dataset){
 		self.yScale.domain([min_y, max_y]);
 	}
 
-	console.log(series);
+	//console.log(series);
 	var series_g = self.plotarea.selectAll("g.series")
 		.data(series, function(d){
 			return d.series_key;
@@ -124,12 +119,11 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.data(function(d){
 			return d.layer;
 		}, function(d){
-			//console.log(d.data.from);
 			return d.data.from;
 		});
 
 	var rects_enter = rects.enter();
-	console.log(rects_enter);
+	//console.log(rects_enter);
 	rects_enter.append("rect")
 		.classed("bars", true)
 		.attr("x", self.w + self.margin_x * 2)
@@ -161,6 +155,11 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("x", -100)
 		.attr("opacity", "0.0")
 		.remove();
+
+	if(self.first_time_rendering){
+		self.severity_g = self.plotarea.append('g')
+			.classed("severity", true);
+	}
 
 	var severity_marks = self.severity_g.selectAll("rect.severity")
 		.data(self.dataset.map(function(d){
@@ -200,6 +199,11 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.remove();
 
+	if(self.first_time_rendering){
+		self.changes_g = self.plotarea.append('g')
+			.classed("changes", true);
+	}
+
 	var changes_per_bar_g = self.changes_g.selectAll("g")
 		.data(self.dataset.map(function(d){
 			return {changes: d.changes, from:d.from};
@@ -207,50 +211,83 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.filter(function(d){
 			return d.changes.length > 0;
 		}), function(d){
-			return d;
-		})
-		.enter()
-		.append("g")
-		.classed("changes_per_bar_g", true);
+			return d.from;
+		});
+	var changes_per_bar_g_enter = changes_per_bar_g.enter();
+	var changes_per_bar_g_merged = changes_per_bar_g_enter.append("g")
+		.classed("changes_per_bar_g", true)
+		.merge(changes_per_bar_g);
+	changes_per_bar_g.exit().remove();
 
-	var changes_circles = changes_per_bar_g.selectAll("circle")
+	var changes_circles = changes_per_bar_g_merged.selectAll("circle")
 		.data(function(d){
 			return d.changes;
 		}, function(d){
 			return d;
-		})
-		.enter()
+		});
+	var changes_circles_enter = changes_circles.enter()
 		.append("circle")
 		.attr("r", 5)
-		.attr("cx", function(d){
-			return self.xScale(d3.select(this.parentNode).data()[0].from);
-		})
+		.attr("cx", self.w + self.margin_x * 2)
 		.attr("cy", function(d, i){
 			return self.h - (i+1)*20;
 		})
-		.attr("transform", "translate(" + self.xScale.bandwidth()/2.0 + ",0)");
+		.attr("opacity", "0.0")
+		.merge(changes_circles)
+		.transition("changeCircleAppear")
+		.duration(1000)
+		.delay(function(d, i){
+			return i * 20;
+		})
+		.attr("cx", function(d){
+			return self.xScale(d3.select(this.parentNode).data()[0].from) + self.xScale.bandwidth()/2.0;
+		})
+		.attr("opacity", "1.0")
+		;
+	changes_circles.exit()
+		.transition("changesCirclesExit")
+		.duration(1000)
+		.attr("cx", -100)
+		.attr("opacity", "0.0")
+		.remove();
+		
 	
-	var changes_label = changes_per_bar_g.selectAll("text")
+	var changes_labels = changes_per_bar_g_merged.selectAll("text")
 		.data(function(d){
 			return d.changes;
 		}, function(d){
 			return d;
-		})
-		.enter()
+		});
+	var changes_label_enter = changes_labels.enter()
 		.append("text")
 		.text(function(d, i){
 			return d;
 		})
 		.style("text-anchor", "middle")
 		.style("font-size", "0.6em")
-		.attr("x", function(d){
-			return self.xScale(d3.select(this.parentNode).data()[0].from) + self.xScale.bandwidth()/2.0;
-		})
+		.attr("x", self.w + self.margin_x * 2)
 		.attr("y", function(d, i){
 			return self.h - (i+1)*20 - 7;
 		})
-		.attr("xlink:href", "http://en.wikipedia.org/")
+		.attr("opacity", "0.0")
+		.merge(changes_labels)
+		.transition("changeLabelAppear")
+		.duration(1000)
+		.delay(function(d, i){
+			return i * 20;
+		})
+		.attr("x", function(d){
+			return self.xScale(d3.select(this.parentNode).data()[0].from) + self.xScale.bandwidth()/2.0;
+		})
+		.attr("opacity", "1.0")
 		;
+
+	changes_labels.exit()
+		.transition("changesLablesExit")
+		.duration(1000)
+		.attr("x", -100)
+		.attr("opacity", "0.0")
+		.remove();
 		
 
 	var axisGeneratorX = d3.axisBottom()
