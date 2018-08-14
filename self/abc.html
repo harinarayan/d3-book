@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Page Template</title>
+    </head>
+    <body>
+	<div id="changesAndEffects" tyle="border:1px solid blue;">
+	</div>
+        <script type="text/javascript" src="./d3/d3.min.js"></script>
+        <script type="text/javascript" src="./abc.js"></script>
+        <script type="text/javascript">
+		var cae = new ChangesAndEffects({
+			container_selector: "#changesAndEffects",
+			height: 500,
+			width: 1000,
+		});
+		cae.render();
+        </script>
+    </body>
+</html>
