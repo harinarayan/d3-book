@@ -15,6 +15,7 @@
 			container_selector: "#changesAndEffects",
 			height: 500,
 			width: 1000,
+			series_keys: ["A", "B", "C", "D"],
 		});
 		
 		var dataset = [
@@ -56,7 +57,7 @@
 			for(var i=0; i<getRandomInt(5); i++){
 				new_item.changes.push("CHG" + getRandomInt(9999));
 			}
-			console.log(new_item);
+			//console.log(new_item);
 			dataset.push(new_item);
 
 			cae.render(dataset);

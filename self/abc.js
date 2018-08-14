@@ -5,6 +5,7 @@ var ChangesAndEffects = function(config){
 	this.width = +config.width || 1000;
 	this.margin_x = 50;
 	this.margin_y = 50;
+	this.series_keys = config.series_keys;
 	this.first_time_rendering = true;
 	
 	this.init();
@@ -27,7 +28,11 @@ ChangesAndEffects.prototype.init = function(){
 		.attr("width", self.w)
 		.attr("transform", "translate(" + self.margin_x + ", " + self.margin_y + ")");
 
-	self.severity_g = self.plotarea.append('g');
+	self.severity_g = self.plotarea.append('g')
+		.classed("severity", true);
+	self.changes_g = self.plotarea.append('g')
+		.classed("changes", true);
+	
 
 	self.colorGen = d3.scaleOrdinal(
 	[
@@ -53,25 +58,30 @@ ChangesAndEffects.prototype.generate_series = function(){
 		return Object.assign({from: d.from}, d.counts);
 	});
 	var stack = d3.stack()
-		.keys(["A", "B", "C", "D"])
+		.keys(self.series_keys)
 		.order(d3.stackOrderDescending);
-	return stack(list_of_counts);
+	//console.log(stack(list_of_counts));
+	layers = stack(list_of_counts).map(function(d, i){
+		return {series_key: self.series_keys[i], layer: d}
+	});
+	//console.log(layers);
+	return layers;
 }
 
 ChangesAndEffects.prototype.render = function(dataset){
 	var self = this;
 	self.dataset = dataset;
 	var series = self.generate_series();
-	console.log(series);
+	//console.log(series.length);
 
 	var min_y = d3.min(series, function(d){
-		return d3.min(d, function(e){
+		return d3.min(d.layer, function(e){
 			return e[0];
 		})
 	});
 
 	var max_y = d3.max(series, function(d){
-		return d3.max(d, function(e){
+		return d3.max(d.layer, function(e){
 			return e[1];
 		})
 	});
@@ -95,28 +105,34 @@ ChangesAndEffects.prototype.render = function(dataset){
 		self.yScale.domain([min_y, max_y]);
 	}
 
-	var series_g = self.plotarea.selectAll("g")
+	console.log(series);
+	var series_g = self.plotarea.selectAll("g.series")
 		.data(series, function(d){
-			return d;
+			return d.series_key;
+		});
+	var series_g_enter = series_g.enter();
+	var series_g_merged = series_g_enter.append("g")
+		.classed("series", true)
+		.style("fill", function(d, i){
+			return self.colorGen(d.series_key);
 		})
-		.enter()
-		.append("g")
-		.style("fill", function(i, d){
-			return self.colorGen(i);
-		})
+		.merge(series_g)
 		;
+	series_g.exit().remove();
 
-	var rects = series_g.selectAll("rect")
+	var rects = series_g_merged.selectAll("rect.bars")
 		.data(function(d){
-			return d;
+			return d.layer;
 		}, function(d){
+			//console.log(d.data.from);
 			return d.data.from;
-		})
-		.enter()
-		.append("rect")
-		.attr("x", function(d, i){
-			return self.xScale(d.data.from);
-		})
+		});
+
+	var rects_enter = rects.enter();
+	console.log(rects_enter);
+	rects_enter.append("rect")
+		.classed("bars", true)
+		.attr("x", self.w + self.margin_x * 2)
 		.attr("y", function(d, i){
 			return self.yScale(d[1]);
 		})
@@ -127,15 +143,26 @@ ChangesAndEffects.prototype.render = function(dataset){
 			return self.xScale.bandwidth();
 		})
 		.attr("opacity", "0.0")
-		.transition("seriesAppear")
+		.merge(rects)
+		.transition("rectsAppear")
 		.duration(1000)
 		.delay(function(d, i){
 			return i * 20;
 		})
+		.attr("x", function(d, i){
+			return self.xScale(d.data.from);
+		})
 		.attr("opacity", "1.0")
 		;
 
-	var severity_marks = self.severity_g.selectAll("rect")
+	rects.exit()
+		.transition("rectsExit")
+		.duration(1000)
+		.attr("x", -100)
+		.attr("opacity", "0.0")
+		.remove();
+
+	var severity_marks = self.severity_g.selectAll("rect.severity")
 		.data(self.dataset.map(function(d){
                         return {severity: d.severity, from: d.from};
                 }), function(d){
@@ -150,7 +177,7 @@ ChangesAndEffects.prototype.render = function(dataset){
 		})
 		.attr("height", 20)
 		.attr("width", self.xScale.bandwidth())
-		.attr("y", 0)
+		.attr("y", 1)
 		.attr("x", self.w + self.margin_x * 2)
 		.attr("opacity", "0.0")
 		.attr("transform", "translate(0," + (self.h)  + ")")
@@ -173,9 +200,7 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.remove();
 
-	var changes_g = self.plotarea.append('g');
-	
-	var changes_per_bar_g = changes_g.selectAll("g")
+	var changes_per_bar_g = self.changes_g.selectAll("g")
 		.data(self.dataset.map(function(d){
 			return {changes: d.changes, from:d.from};
 		})
