@@ -7,6 +7,7 @@
     <body>
 	<div id="changesAndEffects" tyle="border:1px solid blue;">
 	</div>
+	<button type="button" id="refresh">Refresh</button> 
         <script type="text/javascript" src="./d3/d3.min.js"></script>
         <script type="text/javascript" src="./abc.js"></script>
         <script type="text/javascript">
@@ -15,7 +16,51 @@
 			height: 500,
 			width: 1000,
 		});
-		cae.render();
+		
+		var dataset = [
+			{ "from":1533081600, "severity": "0", "counts": {A: 0, B: 10, C: 15, D: 10}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533082500, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 9}, "changes":[] },
+			{ "from":1533083400, "severity": "2", "counts": {A: 1, B: 10, C: 15, D: 13}, "changes":[] },
+			{ "from":1533084300, "severity": "3", "counts": {A: 2, B: 10, C: 15, D: 8}, "changes":[] },
+			{ "from":1533085200, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG3456", "CHG4567", "CHG7890"] },
+			{ "from":1533086100, "severity": "1", "counts": {A: 4, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533087000, "severity": "1", "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533087900, "severity": "0", "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533088800, "severity": "0", "counts": {A: 3, B: 15, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533089700, "severity": "1", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533090600, "severity": "2", "counts": {A: 0, B: 15, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533091500, "severity": "1", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533092400, "severity": "0", "counts": {A: 0, B: 14, C: 15, D: 8}, "changes":[] },
+			{ "from":1533093300, "severity": "0", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":[] },
+			{ "from":1533094200, "severity": "0", "counts": {A: 0, B: 6, C: 19, D: 8}, "changes":[] },
+			{ "from":1533095100, "severity": "0", "counts": {A: 0, B: 10, C: 23, D: 8}, "changes":[] },
+			{ "from":1533096000, "severity": "3", "counts": {A: 0, B: 10, C: 17, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533096900, "severity": "2", "counts": {A: 0, B: 10, C: 11, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533097800, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533098700, "severity": "0", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":[] },
+		]
+		cae.render(dataset);
+	
+		function getRandomInt(max) {
+			return Math.floor(Math.random() * Math.floor(max));
+		}
+
+		document.getElementById("refresh").addEventListener("click", function(event){
+			dataset.shift();
+			var new_item = {
+					"from":(dataset[dataset.length-1].from + 15*60),
+					"severity": getRandomInt(4),
+					"counts": {A: getRandomInt(10), B: getRandomInt(10), C: getRandomInt(10), D: getRandomInt(10)},
+					"changes":[]
+					};
+			for(var i=0; i<getRandomInt(5); i++){
+				new_item.changes.push("CHG" + getRandomInt(9999));
+			}
+			console.log(new_item);
+			dataset.push(new_item);
+
+			cae.render(dataset);
+		});
         </script>
     </body>
 </html>

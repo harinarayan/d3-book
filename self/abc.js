@@ -5,28 +5,7 @@ var ChangesAndEffects = function(config){
 	this.width = +config.width || 1000;
 	this.margin_x = 50;
 	this.margin_y = 50;
-	this.dataset = [
-		{ "from":1533081600, "severity": "0", "counts": {A: 0, B: 10, C: 15, D: 10}, "changes":["CHG1234", "CHG2345"] },
-		{ "from":1533082500, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 9}, "changes":[] },
-		{ "from":1533083400, "severity": "2", "counts": {A: 1, B: 10, C: 15, D: 13}, "changes":[] },
-		{ "from":1533084300, "severity": "3", "counts": {A: 2, B: 10, C: 15, D: 8}, "changes":[] },
-		{ "from":1533085200, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG3456", "CHG4567", "CHG7890"] },
-		{ "from":1533086100, "severity": "1", "counts": {A: 4, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-		{ "from":1533087000, "severity": "1", "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-		{ "from":1533087900, "severity": "0", "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-		{ "from":1533088800, "severity": "0", "counts": {A: 3, B: 15, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
-		{ "from":1533089700, "severity": "1", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
-		{ "from":1533090600, "severity": "2", "counts": {A: 0, B: 15, C: 15, D: 8}, "changes":["CHG1234"] },
-		{ "from":1533091500, "severity": "1", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
-		{ "from":1533092400, "severity": "0", "counts": {A: 0, B: 14, C: 15, D: 8}, "changes":[] },
-		{ "from":1533093300, "severity": "0", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":[] },
-		{ "from":1533094200, "severity": "0", "counts": {A: 0, B: 6, C: 19, D: 8}, "changes":[] },
-		{ "from":1533095100, "severity": "0", "counts": {A: 0, B: 10, C: 23, D: 8}, "changes":[] },
-		{ "from":1533096000, "severity": "3", "counts": {A: 0, B: 10, C: 17, D: 8}, "changes":["CHG1234"] },
-		{ "from":1533096900, "severity": "2", "counts": {A: 0, B: 10, C: 11, D: 8}, "changes":["CHG1234", "CHG2345"] },
-		{ "from":1533097800, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-		{ "from":1533098700, "severity": "0", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":[] },
-	]
+	this.first_time_rendering = true;
 	
 	this.init();
 }
@@ -47,6 +26,8 @@ ChangesAndEffects.prototype.init = function(){
 		.attr("height", self.h)
 		.attr("width", self.w)
 		.attr("transform", "translate(" + self.margin_x + ", " + self.margin_y + ")");
+
+	self.severity_g = self.plotarea.append('g');
 
 	self.colorGen = d3.scaleOrdinal(
 	[
@@ -77,8 +58,9 @@ ChangesAndEffects.prototype.generate_series = function(){
 	return stack(list_of_counts);
 }
 
-ChangesAndEffects.prototype.render = function(){
+ChangesAndEffects.prototype.render = function(dataset){
 	var self = this;
+	self.dataset = dataset;
 	var series = self.generate_series();
 	console.log(series);
 
@@ -105,13 +87,17 @@ ChangesAndEffects.prototype.render = function(){
 	//console.log(min_x + ", " + max_x + ", " + min_y + ", " + max_y);
 
 	var domain_x = self.dataset.map(function(d) { return d.from; });
-	console.log(domain_x);
-	self.xScale = d3.scaleBand().domain(domain_x).range([0, self.w]).padding(0.05);
-	self.yScale = d3.scaleLinear().domain([min_y, max_y]).range([self.h, 0]);
+	if(self.first_time_rendering){
+		self.xScale = d3.scaleBand().domain(domain_x).range([0, self.w]).padding(0.05);
+		self.yScale = d3.scaleLinear().domain([min_y, max_y]).range([self.h, 0]);
+	}else{
+		self.xScale.domain(domain_x);
+		self.yScale.domain([min_y, max_y]);
+	}
 
-	var groups = self.plotarea.selectAll("g")
+	var series_g = self.plotarea.selectAll("g")
 		.data(series, function(d){
-			return d.key;
+			return d;
 		})
 		.enter()
 		.append("g")
@@ -120,9 +106,11 @@ ChangesAndEffects.prototype.render = function(){
 		})
 		;
 
-	var rects = groups.selectAll("rect")
+	var rects = series_g.selectAll("rect")
 		.data(function(d){
 			return d;
+		}, function(d){
+			return d.data.from;
 		})
 		.enter()
 		.append("rect")
@@ -138,28 +126,52 @@ ChangesAndEffects.prototype.render = function(){
 		.attr("width", function(d, i){
 			return self.xScale.bandwidth();
 		})
-
-	var severity_g = self.plotarea.append('g');
-
-	var severity_marks = severity_g.selectAll("rect")
-		.data(self.dataset.map(function(d){
-			return {severity: d.severity, from: d.from};
-		}), function(d){
-			return d;
+		.attr("opacity", "0.0")
+		.transition("seriesAppear")
+		.duration(1000)
+		.delay(function(d, i){
+			return i * 20;
 		})
-		.enter()
-		.append("rect")
+		.attr("opacity", "1.0")
+		;
+
+	var severity_marks = self.severity_g.selectAll("rect")
+		.data(self.dataset.map(function(d){
+                        return {severity: d.severity, from: d.from};
+                }), function(d){
+			return d.from;
+		});
+
+	var severity_marks_enter = severity_marks.enter();
+	severity_marks_enter.append("rect")
+		.classed("severity", true)
 		.attr("fill", function(d){
 			return self.severityColorGen(+d.severity);
 		})
 		.attr("height", 20)
 		.attr("width", self.xScale.bandwidth())
 		.attr("y", 0)
+		.attr("x", self.w + self.margin_x * 2)
+		.attr("opacity", "0.0")
+		.attr("transform", "translate(0," + (self.h)  + ")")
+		.merge(severity_marks)
+		.transition("severityAppear")
+		.duration(1000)
+		.delay(function(d, i){
+			return i * 20;
+		})
 		.attr("x", function(d){
 			return self.xScale(d.from);
 		})
-		.attr("transform", "translate(0," + (self.h)  + ")")
+		.attr("opacity", "1.0")
 		;
+
+	severity_marks.exit()
+		.transition("severityExit")
+		.duration(1000)
+		.attr("x", -100)
+		.attr("opacity", "0.0")
+		.remove();
 
 	var changes_g = self.plotarea.append('g');
 	
@@ -226,26 +238,40 @@ ChangesAndEffects.prototype.render = function(){
 	var axisGeneratorY = d3.axisLeft()
 		.scale(self.yScale);
 
-	self.svg.append("g")
-		.classed("x axis", true)
-		.attr("transform", "translate(" + self.margin_x + ", " + (self.h + self.margin_y + 20) + ")")
-		.call(axisGeneratorX);
+	if(self.first_time_rendering){
+		self.xAxis = self.svg.append("g")
+			.classed("x axis", true)
+			.attr("transform", "translate(" + self.margin_x + ", " + (self.h + self.margin_y + 20) + ")")
+			.call(axisGeneratorX);
 
-	self.svg.append("g")
-		.classed("y axis", true)
-		.attr("transform", "translate(" + self.margin_x + ", " + self.margin_y + ")")
-		.call(axisGeneratorY);
+		self.yAxis = self.svg.append("g")
+			.classed("y axis", true)
+			.attr("transform", "translate(" + self.margin_x + ", " + self.margin_y + ")")
+			.call(axisGeneratorY);
 
-	self.svg.append("text")
-		.attr("x", 20)
-		.attr("y", 40)
-		.style("font-size", "0.8em")
-		.style("font-weight", "bold")
-		.text("Alert count");
-	self.svg.append("text")
-		.attr("x", 4)
-		.attr("y", self.h + self.margin_y + 14)
-		.style("font-size", "0.8em")
-		.style("font-weight", "bold")
-		.text("Severity");
+		self.svg.append("text")
+			.attr("x", 20)
+			.attr("y", 40)
+			.style("font-size", "0.8em")
+			.style("font-weight", "bold")
+			.text("Alert count");
+
+		self.svg.append("text")
+			.attr("x", 4)
+			.attr("y", self.h + self.margin_y + 14)
+			.style("font-size", "0.8em")
+			.style("font-weight", "bold")
+			.text("Severity");
+	}else{
+		self.xAxis
+			.transition("xAxis")
+			.duration(1000)
+			.call(axisGeneratorX);
+		self.yAxis
+			.transition("yAxis")
+			.duration(1000)
+			.call(axisGeneratorY);
+	}
+
+	self.first_time_rendering = false;
 }
