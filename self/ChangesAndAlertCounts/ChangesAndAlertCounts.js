@@ -4,7 +4,7 @@
  * Date    : Aug 2018
  */
 
-var ChangesAndEffects = function(config){
+var ChangesAndAlertCounts = function(config){
 	this.container_selector = config.container_selector || "div.changes-and-effects";
 	this.height = +config.height || 500;
 	this.width = +config.width || 1000;
@@ -20,7 +20,7 @@ var ChangesAndEffects = function(config){
 	}
 }
 
-ChangesAndEffects.prototype.validate_config = function(){
+ChangesAndAlertCounts.prototype.validate_config = function(){
 	var self = this;
 	if(self.height < 300 || self.width < 400){
 		self.svg = d3.select(self.container_selector)
@@ -32,7 +32,7 @@ ChangesAndEffects.prototype.validate_config = function(){
 	}
 	return true
 };
-ChangesAndEffects.prototype.init = function(){
+ChangesAndAlertCounts.prototype.init = function(){
 	var self = this;
 	self.svg = d3.select(self.container_selector)
 		.append("svg")
@@ -91,7 +91,7 @@ ChangesAndEffects.prototype.init = function(){
 		;
 }
 
-ChangesAndEffects.prototype.render_axes = function(){
+ChangesAndAlertCounts.prototype.render_axes = function(){
 	var self = this;
 	var axisGeneratorX = d3.axisBottom()
 		.scale(self.xScale)
@@ -150,7 +150,7 @@ ChangesAndEffects.prototype.render_axes = function(){
 		;
 }
 
-ChangesAndEffects.prototype.generate_series = function(){
+ChangesAndAlertCounts.prototype.generate_series = function(){
 	var self = this;
 	var list_of_counts = self.dataset.map(function(d){
 		return Object.assign({time: d.time}, d.counts);
@@ -165,7 +165,7 @@ ChangesAndEffects.prototype.generate_series = function(){
 	return layers;
 }
 
-ChangesAndEffects.prototype.render = function(dataset){
+ChangesAndAlertCounts.prototype.render = function(dataset){
 	var self = this;
 	self.dataset = dataset;
 	var series = self.generate_series();
@@ -211,7 +211,7 @@ ChangesAndEffects.prototype.render = function(dataset){
 	self.first_time_rendering = false;
 };
 
-ChangesAndEffects.prototype.render_bars = function(series){
+ChangesAndAlertCounts.prototype.render_bars = function(series){
 	var self = this;
 	var series_g = self.plotarea.selectAll("g.series")
 		.data(series, function(d){
@@ -306,7 +306,7 @@ ChangesAndEffects.prototype.render_bars = function(series){
 
 };
 
-ChangesAndEffects.prototype.render_severity = function(){
+ChangesAndAlertCounts.prototype.render_severity = function(){
 	var self = this;
 	if(self.first_time_rendering){
 		self.severity_g = self.plotarea.append('g')
@@ -385,7 +385,7 @@ ChangesAndEffects.prototype.render_severity = function(){
 	});
 };
 
-ChangesAndEffects.prototype.render_changes_per_slot = function(){
+ChangesAndAlertCounts.prototype.render_changes_per_slot = function(){
 	var self = this;
 	if(self.first_time_rendering){
 		self.changes_g = self.plotarea.append('g')
@@ -431,7 +431,7 @@ ChangesAndEffects.prototype.render_changes_per_slot = function(){
 	self.render_changes(changes_per_slot_merged);
 };
 
-ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
+ChangesAndAlertCounts.prototype.render_changes = function(changes_per_slot){
 	var self = this;
 	changes_per_slot.selectAll('a.change')
 		.data(function(d){

@@ -2,15 +2,15 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>ChangesAndEffects Demo</title>
+        <title>ChangesAndAlertCounts Demo</title>
     </head>
     <body>
-	<h1 style="display:inline-block;">ChangesAndEffects Demo</h1>
+	<h1 style="display:inline-block;">ChangesAndAlertCounts Demo</h1>
 	<a href="hhhh">hhhh</a> hsreenivasan@paypal.com
 	<div style="width:1500px;">
-		<div id="changesAndEffectsLarge" style="display:inline-block;">
+		<div id="changesAndAlertCountsLarge" style="display:inline-block;">
 		</div>
-		<div id="changesAndEffectsSmall" style="display:inline-block;">
+		<div id="changesAndAlertCountsSmall" style="display:inline-block;">
 		</div>
 		<div style="display:inline-block;width:1000px;text-align:center;">
 			Large
@@ -22,16 +22,16 @@
 		<small><small>Timezone is PT unless otherwise specified</small></small>
 		<br>
 		<br>
-		<button style="padding:10px;font-weight:bold;margin-left:auto;width:1400px;font-size:1.2em;" type="button" id="refresh">Click to simulate data refresh, using randomized data!</button> 
+		<button style="padding:10px;font-weight:bold;margin-left:auto;width:1400px;font-size:1.2em;" type="button" id="refresh">Click here to simulate data refresh, using randomized data!</button> 
 		<p style="color:maroon;font-weight:bold;">These graphs are interactive! Move your mouse around for tooltips. Click on the change ticket circle to go to the ticket page on service now.</p> 
 	</div>
         <script type="text/javascript" src="../d3/d3.min.js"></script>
         <script type="text/javascript" src="../moment/moment.min.js"></script>
         <script type="text/javascript" src="../moment/moment-timezone-with-data.min.js"></script>
-        <script type="text/javascript" src="./ChangesAndEffects.js"></script>
+        <script type="text/javascript" src="./ChangesAndAlertCounts.js"></script>
         <script type="text/javascript">
-		var cae_large = new ChangesAndEffects({
-			container_selector: "#changesAndEffectsLarge",
+		var caac_large = new ChangesAndAlertCounts({
+			container_selector: "#changesAndAlertCountsLarge",
 			height: 500,
 			width: 1000,
 			change_url_formatter: function(ticket_id){
@@ -39,8 +39,8 @@
 			},
 			series_keys: ["ModuleA", "ModuleB", "ModuleC", "ModuleD"],
 		});
-		var cae_small = new ChangesAndEffects({
-			container_selector: "#changesAndEffectsSmall",
+		var caac_small = new ChangesAndAlertCounts({
+			container_selector: "#changesAndAlertCountsSmall",
 			height: 300,
 			width: 400,
 			change_url_formatter: function(ticket_id){
@@ -72,8 +72,8 @@
 			{ "time":1533097800, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 1, ModuleC: 5, ModuleD: 1}, "changes":["CHG1234"] },
 			{ "time":1533098700, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":[] },
 		]
-		cae_large.render(dataset);
-		cae_small.render(dataset);
+		caac_large.render(dataset);
+		caac_small.render(dataset);
 	
 		function getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
@@ -131,8 +131,8 @@
 				dataset.push(new_item);
 			}
 
-			cae_large.render(dataset);
-			cae_small.render(dataset);
+			caac_large.render(dataset);
+			caac_small.render(dataset);
 		});
         </script>
     </body>
