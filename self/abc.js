@@ -63,7 +63,26 @@ ChangesAndEffects.prototype.init = function(){
 	}else{
 		self.colorGen = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, self.series_keys.length));
 	}
+	self.severityDescMap = {"0":"None", "1":"Low", "2":"Medium", "3":"High"}
 	self.severityColorGen = d3.scaleOrdinal(["green", "gold", "orange", "red"]);
+	self.tooltip = d3.select(self.container_selector)
+		.append("div")
+		.classed("tooltip", true)
+		.attr("height", "auto")
+		.attr("width", "auto")
+		.style("padding", "5px")
+		.style("background-color", "beige")
+		.style("border", "1px solid black")
+		.style("border-radius", "5px")
+		.style("position", "absolute")
+		.style("pointer-events", "none")
+		.style("display", "none")
+		;
+	self.tooltip_p = self.tooltip.append("p")
+		.style("margin", "5px")
+		.style("font-size", "0.8em")
+		.style("font-family", "Helvetica Neue, Helvetica, Arial, sans-serif")
+		;
 }
 
 ChangesAndEffects.prototype.render_axes = function(){
@@ -239,6 +258,15 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.remove();
 
+	self.render_severity();
+	self.render_changes_per_slot();
+	self.render_axes();
+
+	self.first_time_rendering = false;
+};
+
+ChangesAndEffects.prototype.render_severity = function(){
+	var self = this;
 	if(self.first_time_rendering){
 		self.severity_g = self.plotarea.append('g')
 			.classed("severity", true);
@@ -252,10 +280,10 @@ ChangesAndEffects.prototype.render = function(dataset){
 		});
 
 	var severity_marks_enter = severity_marks.enter();
-	severity_marks_enter.append("rect")
+	var severity_marks_merged = severity_marks_enter.append("rect")
 		.classed("severity", true)
 		.attr("fill", function(d){
-			return self.severityColorGen(+d.severity);
+			return self.severityColorGen(+d.severity.worst);
 		})
 		.attr("height", 15)
 		.attr("width", self.xScale.bandwidth())
@@ -264,7 +292,9 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.attr("transform", "translate(0," + (self.h)  + ")")
 		.merge(severity_marks)
-		.transition("severityAppear")
+		;
+
+	severity_marks_merged.transition("severityAppear")
 		.duration(1000)
 		.delay(function(d, i){
 			return i * 20;
@@ -282,10 +312,38 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.remove();
 
-	self.render_changes_per_slot();
-	self.render_axes();
+	severity_marks_merged.on("mouseover", function(d){
+		var this_element = d3.select(this);
+		this_element.attr("stroke", "black");
+		this_element.attr("stroke-width", 2);
+		var xPosition = parseFloat(this_element.attr("x")) + self.margin_x;
+		var yPosition = parseFloat(this_element.attr("y")) / 2 + self.h;
 
-	self.first_time_rendering = false;
+		var message = "None";
+		if(Object.entries(d.severity.details).length){
+			message = "";
+			Object.entries(d.severity.details).forEach(function(entry){
+				message += self.severityDescMap[entry[0]] + ": " + entry[1].toString();
+				message += "<br>"
+			});
+		}
+		
+		self.tooltip
+			.style("left", xPosition + "px")
+			.style("top", yPosition + "px")
+			.style("display", "initial")
+		self.tooltip_p
+			.selectAll("*").remove();
+		self.tooltip_p
+			.html(message)
+			;
+	})
+	.on("mouseout", function(d){
+		var this_element = d3.select(this);
+		this_element.attr("stroke", "none");
+		self.tooltip
+			.style("display", "none")
+	});
 };
 
 ChangesAndEffects.prototype.render_changes_per_slot = function(){

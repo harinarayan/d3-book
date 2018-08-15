@@ -26,26 +26,26 @@
 		});
 		
 		var dataset = [
-			{ "from":1533081600, "severity": "0", "counts": {A: 0, B: 10, C: 15, D: 10}, "changes":["CHG1234", "CHG2345"] },
-			{ "from":1533082500, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 9}, "changes":[] },
-			{ "from":1533083400, "severity": "2", "counts": {A: 1, B: 10, C: 15, D: 13}, "changes":[] },
-			{ "from":1533084300, "severity": "3", "counts": {A: 2, B: 10, C: 15, D: 8}, "changes":[] },
-			{ "from":1533085200, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG3456", "CHG4567", "CHG7890"] },
-			{ "from":1533086100, "severity": "1", "counts": {A: 4, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-			{ "from":1533087000, "severity": "1", "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-			{ "from":1533087900, "severity": "0", "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-			{ "from":1533088800, "severity": "0", "counts": {A: 3, B: 15, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "from":1533089700, "severity": "1", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "from":1533090600, "severity": "2", "counts": {A: 0, B: 15, C: 15, D: 8}, "changes":["CHG1234"] },
-			{ "from":1533091500, "severity": "1", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "from":1533092400, "severity": "0", "counts": {A: 0, B: 14, C: 15, D: 8}, "changes":[] },
-			{ "from":1533093300, "severity": "0", "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":[] },
-			{ "from":1533094200, "severity": "0", "counts": {A: 0, B: 6, C: 19, D: 8}, "changes":[] },
-			{ "from":1533095100, "severity": "0", "counts": {A: 0, B: 10, C: 23, D: 8}, "changes":[] },
-			{ "from":1533096000, "severity": "3", "counts": {A: 0, B: 10, C: 17, D: 8}, "changes":["CHG1234"] },
-			{ "from":1533096900, "severity": "2", "counts": {A: 0, B: 10, C: 11, D: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "from":1533097800, "severity": "1", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
-			{ "from":1533098700, "severity": "0", "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":[] },
+			{ "from":1533081600, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 10, C: 15, D: 10}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533082500, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 0, B: 10, C: 15, D: 9}, "changes":[] },
+			{ "from":1533083400, "severity": {"worst":"2", "details":{"1":["C1"], "2":["C2"]}}, "counts": {A: 1, B: 10, C: 15, D: 13}, "changes":[] },
+			{ "from":1533084300, "severity": {"worst":"3", "details":{"1":["C1"], "2":["C2", "C8"], "3":["C15"]}}, "counts": {A: 2, B: 10, C: 15, D: 8}, "changes":[] },
+			{ "from":1533085200, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG3456", "CHG4567", "CHG7890"] },
+			{ "from":1533086100, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 4, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533087000, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533087900, "severity": {"worst":"0", "details":{}}, "counts": {A: 1, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533088800, "severity": {"worst":"0", "details":{}}, "counts": {A: 3, B: 15, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533089700, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533090600, "severity": {"worst":"2", "details":{"1":["C1"], "2":["C2"]}}, "counts": {A: 0, B: 15, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533091500, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533092400, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 14, C: 15, D: 8}, "changes":[] },
+			{ "from":1533093300, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 12, C: 15, D: 8}, "changes":[] },
+			{ "from":1533094200, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 6, C: 19, D: 8}, "changes":[] },
+			{ "from":1533095100, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 10, C: 23, D: 8}, "changes":[] },
+			{ "from":1533096000, "severity": {"worst":"3", "details":{"1":["C1"], "2":["C2", "C8"], "3":["C15"]}}, "counts": {A: 0, B: 10, C: 17, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533096900, "severity": {"worst":"2", "details":{"1":["C1"], "2":["C2"]}}, "counts": {A: 0, B: 10, C: 11, D: 8}, "changes":["CHG1234", "CHG2345"] },
+			{ "from":1533097800, "severity": {"worst":"1", "details":{"1":["C1", "C2"]}}, "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
+			{ "from":1533098700, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":[] },
 		]
 		cae.render(dataset);
 	
@@ -57,10 +57,24 @@
 			dataset.shift();
 			var new_item = {
 					"from":(dataset[dataset.length-1].from + 15*60),
-					"severity": getRandomInt(4),
+					"severity": {"worst":getRandomInt(4).toString(), "details":{}},
 					"counts": {A: getRandomInt(10)*2, B: getRandomInt(10)*2, C: getRandomInt(10)*3, D: getRandomInt(10)},
 					"changes":[]
 					};
+			switch(new_item.severity.worst){
+				case "1":	
+					new_item.severity.details = {"1":["C1", "C2"]};
+					break;
+				case "2":	
+					new_item.severity.details = {"1":["C1"], "2":["C2"]};
+					break;
+				case "3":	
+					new_item.severity.details = {"1":["C1"], "2":["C2", "C8"], "3":["C15"]};
+					break;
+				default:
+					new_item.severity.details = {}
+					break;
+			};
 			for(var i=0; i<getRandomInt(5); i++){
 				new_item.changes.push("CHG" + getRandomInt(9999));
 			}
