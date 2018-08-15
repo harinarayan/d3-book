@@ -5,7 +5,8 @@
         <title>ChangesAndEffects Demo</title>
     </head>
     <body>
-	<h1>ChangesAndEffects Demo</h1>
+	<h1 style="display:inline-block;">ChangesAndEffects Demo</h1>
+	<a href="hhhh">hhhh</a> hsreenivasan@paypal.com
 	<div style="width:1500px;">
 		<div id="changesAndEffectsLarge" style="display:inline-block;">
 		</div>
@@ -50,26 +51,26 @@
 	
 		
 		var dataset = [
-			{ "time":1533081600, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 15, ModuleD: 10}, "changes":["CHG1234", "CHG2345"] },
-			{ "time":1533082500, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 15, ModuleD: 9}, "changes":[] },
-			{ "time":1533083400, "severity": {"worst":"2", "details":{"1":["Comp1"], "2":["Comp2"]}}, "counts": {ModuleA: 1, ModuleB: 10, ModuleC: 15, ModuleD: 13}, "changes":[] },
-			{ "time":1533084300, "severity": {"worst":"3", "details":{"1":["Comp1"], "2":["Comp2", "Comp8"], "3":["Comp15"]}}, "counts": {ModuleA: 2, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":[] },
-			{ "time":1533085200, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":["CHG3456", "CHG4567", "CHG7890"] },
-			{ "time":1533086100, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 4, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234"] },
-			{ "time":1533087000, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 1, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234"] },
-			{ "time":1533087900, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 1, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234"] },
-			{ "time":1533088800, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 3, ModuleB: 15, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "time":1533089700, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 12, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "time":1533090600, "severity": {"worst":"2", "details":{"1":["Comp1"], "2":["Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 15, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234"] },
-			{ "time":1533091500, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 12, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "time":1533092400, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 14, ModuleC: 15, ModuleD: 8}, "changes":[] },
-			{ "time":1533093300, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 12, ModuleC: 15, ModuleD: 8}, "changes":[] },
-			{ "time":1533094200, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 6, ModuleC: 19, ModuleD: 8}, "changes":[] },
-			{ "time":1533095100, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 23, ModuleD: 8}, "changes":[] },
-			{ "time":1533096000, "severity": {"worst":"3", "details":{"1":["Comp1"], "2":["Comp2", "Comp8"], "3":["Comp15"]}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 17, ModuleD: 8}, "changes":["CHG1234"] },
-			{ "time":1533096900, "severity": {"worst":"2", "details":{"1":["Comp1"], "2":["Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 11, ModuleD: 8}, "changes":["CHG1234", "CHG2345"] },
-			{ "time":1533097800, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":["CHG1234"] },
-			{ "time":1533098700, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 10, ModuleC: 15, ModuleD: 8}, "changes":[] },
+			{ "time":1533081600, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":["CHG1234", "CHG2345"] },
+			{ "time":1533082500, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 3, ModuleC: 1, ModuleD: 8 }, "changes":[] },
+			{ "time":1533083400, "severity": {"worst":"2", "details":{"1":["Comp1"], "2":["Comp2"]}}, "counts": {ModuleA: 1, ModuleB: 3, ModuleC: 1, ModuleD: 3}, "changes":[] },
+			{ "time":1533084300, "severity": {"worst":"3", "details":{"1":["Comp1"], "2":["Comp2", "Comp8"], "3":["Comp15"]}}, "counts": {ModuleA: 2, ModuleB: 1, ModuleC: 5, ModuleD: 7}, "changes":[] },
+			{ "time":1533085200, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 2, ModuleC: 5, ModuleD: 8}, "changes":["CHG3456", "CHG4567", "CHG7890"] },
+			{ "time":1533086100, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 4, ModuleB: 1, ModuleC: 6, ModuleD: 5}, "changes":["CHG1234"] },
+			{ "time":1533087000, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 1, ModuleB: 6, ModuleC: 1, ModuleD: 4}, "changes":["CHG1234"] },
+			{ "time":1533087900, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":["CHG1234"] },
+			{ "time":1533088800, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":["CHG1234", "CHG2345"] },
+			{ "time":1533089700, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 2, ModuleC: 3, ModuleD: 4}, "changes":["CHG1234", "CHG2345"] },
+			{ "time":1533090600, "severity": {"worst":"2", "details":{"1":["Comp1"], "2":["Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 5, ModuleC: 1, ModuleD: 4}, "changes":["CHG1234"] },
+			{ "time":1533091500, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 2, ModuleC: 5, ModuleD: 7}, "changes":["CHG1234", "CHG2345"] },
+			{ "time":1533092400, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":[] },
+			{ "time":1533093300, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":[] },
+			{ "time":1533094200, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":[] },
+			{ "time":1533095100, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":["CHG9999"] },
+			{ "time":1533096000, "severity": {"worst":"3", "details":{"1":["Comp1"], "2":["Comp2", "Comp8"], "3":["Comp15"]}}, "counts": {ModuleA: 0, ModuleB: 1, ModuleC: 7, ModuleD: 2}, "changes":["CHG1234", "CHG8787"] },
+			{ "time":1533096900, "severity": {"worst":"2", "details":{"1":["Comp1"], "2":["Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 1, ModuleC: 8, ModuleD: 2}, "changes":[] },
+			{ "time":1533097800, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {ModuleA: 0, ModuleB: 1, ModuleC: 5, ModuleD: 1}, "changes":["CHG1234"] },
+			{ "time":1533098700, "severity": {"worst":"0", "details":{}}, "counts": {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0}, "changes":[] },
 		]
 		cae_large.render(dataset);
 		cae_small.render(dataset);
@@ -79,17 +80,17 @@
 		}
 
 		document.getElementById("refresh").addEventListener("click", function(event){
-			if(getRandomInt(100) < 40){
+			if(getRandomInt(100) < 30){
 				var last_data = dataset[dataset.length-1];
 				switch(getRandomInt(4)){
 					case 1:
-						last_data.counts.ModuleA += 4; break;
+						last_data.counts.ModuleA += 2; break;
 					case 2:
-						last_data.counts.ModuleB += 4; break;
+						last_data.counts.ModuleB += 2; break;
 					case 3:
-						last_data.counts.ModuleC += 4; break;
+						last_data.counts.ModuleC += 2; break;
 					case 4:
-						last_data.counts.ModuleD += 4; break;
+						last_data.counts.ModuleD += 2; break;
 					default:
 						break;
 				}
@@ -98,10 +99,15 @@
 				}
 			}else{
 				dataset.shift();
+				var worst = getRandomInt(4).toString();
+				var counts = {ModuleA: 0, ModuleB: 0, ModuleC: 0, ModuleD: 0};
+				if(worst != "0"){
+					counts = {ModuleA: getRandomInt(5), ModuleB: getRandomInt(5), ModuleC: getRandomInt(5), ModuleD: getRandomInt(5)}
+				}
 				var new_item = {
 						"time":(dataset[dataset.length-1].time + 15*60),
-						"severity": {"worst":getRandomInt(4).toString(), "details":{}},
-						"counts": {ModuleA: getRandomInt(10)*2, ModuleB: getRandomInt(10)*2, ModuleC: getRandomInt(10)*3, ModuleD: getRandomInt(10)},
+						"severity": {"worst":worst, "details":{}},
+						"counts": counts,
 						"changes":[]
 						};
 				switch(new_item.severity.worst){

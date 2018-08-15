@@ -1,3 +1,8 @@
+/*
+ * Version : 1.0
+ * Author  : Harinarayan Sreenivasan (hsreenivasan@paypal.com)	
+ * Date    : Aug 2018
+ */
 
 var ChangesAndEffects = function(config){
 	this.container_selector = config.container_selector || "div.changes-and-effects";
