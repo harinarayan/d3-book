@@ -148,7 +148,7 @@ ChangesAndEffects.prototype.render_axes = function(){
 ChangesAndEffects.prototype.generate_series = function(){
 	var self = this;
 	var list_of_counts = self.dataset.map(function(d){
-		return Object.assign({from: d.from}, d.counts);
+		return Object.assign({time: d.time}, d.counts);
 	});
 	var stack = d3.stack()
 		.keys(self.series_keys);
@@ -179,16 +179,16 @@ ChangesAndEffects.prototype.render = function(dataset){
 	});
 
 	var min_x = d3.min(self.dataset, function(d){
-		return d.from;
+		return d.time;
 	});
 
 	var max_x = d3.max(self.dataset, function(d){
-		return d.from;
+		return d.time;
 	});
 
 	//console.log(min_x + ", " + max_x + ", " + min_y + ", " + max_y);
 
-	var domain_x = self.dataset.map(function(d) { return d.from; });
+	var domain_x = self.dataset.map(function(d) { return d.time; });
 	if(self.first_time_rendering){
 		self.xScale = d3.scaleBand().domain(domain_x).range([0, self.w]).padding(0.05);
 		self.yScale = d3.scaleLinear().domain([min_y, max_y]).range([self.h, 0]);
@@ -225,10 +225,10 @@ ChangesAndEffects.prototype.render_bars = function(series){
 	var rects = series_g_merged.selectAll("rect.bars")
 		.data(function(d){
 			return d.layer.map(function(e){
-				return {series_key: d.series_key, bounds: e, from:e.data.from}
+				return {series_key: d.series_key, bounds: e, time:e.data.time}
 			});
 		}, function(d){
-			return d.from;
+			return d.time;
 		});
 
 	var rects_enter = rects.enter();
@@ -255,13 +255,16 @@ ChangesAndEffects.prototype.render_bars = function(series){
 			return i * 20;
 		})
 		.attr("x", function(d, i){
-			return self.xScale(d.from);
+			return self.xScale(d.time);
 		})
 		.attr("y", function(d, i){
 			return self.yScale(d.bounds[1]);
 		})
 		.attr("height", function(d, i){
 			return self.yScale(d.bounds[0]) - self.yScale(d.bounds[1]);
+		})
+		.attr("width", function(d, i){
+			return self.xScale.bandwidth();
 		})
 		.attr("opacity", "1.0")
 		;
@@ -307,9 +310,9 @@ ChangesAndEffects.prototype.render_severity = function(){
 
 	var severity_marks = self.severity_g.selectAll("rect.severity")
 		.data(self.dataset.map(function(d){
-                        return {severity: d.severity, from: d.from};
+                        return {severity: d.severity, time: d.time};
                 }), function(d){
-			return d.from;
+			return d.time;
 		});
 
 	var severity_marks_enter = severity_marks.enter();
@@ -333,7 +336,7 @@ ChangesAndEffects.prototype.render_severity = function(){
 			return i * 20;
 		})
 		.attr("x", function(d){
-			return self.xScale(d.from);
+			return self.xScale(d.time);
 		})
 		.attr("opacity", "1.0")
 		;
@@ -386,15 +389,14 @@ ChangesAndEffects.prototype.render_changes_per_slot = function(){
 
 	var changes_per_slot = self.changes_g.selectAll("g.changes_per_slot")
 		.data(self.dataset.map(function(d){
-			return {changes: d.changes, from: d.from};
+			return {changes: d.changes, time: d.time};
 		}), function (d){
-			return d.from;
+			return d.time;
 		});
 
 	var changes_per_slot_enter = changes_per_slot.enter();
 	var changes_per_slot_merged = changes_per_slot_enter.append("g")
 		.classed("changes_per_slot", true)
-		.attr("width", self.xScale.bandwidth())
 		.attr("height", function(d){
 			return d.changes.length * 30;
 		})
@@ -410,7 +412,7 @@ ChangesAndEffects.prototype.render_changes_per_slot = function(){
                         return i * 20;
                 })
 		.attr("transform", function(d){
-			return "translate(" + self.xScale(d.from) + ", " + (self.h - d.changes.length * 30) + ")";
+			return "translate(" + (self.xScale(d.time) + self.xScale.bandwidth()/2.0) + ", " + (self.h - d.changes.length * 30) + ")";
 		})
 		;
 	changes_per_slot.exit()
@@ -443,9 +445,7 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.attr("cy", function(d, i){
 			return i * 30 + 17;
 		})
-		.attr("cx", self.xScale.bandwidth()/2)
-		.attr("height", 30)
-		.attr("width", self.xScale.bandwidth())
+		.attr("cx", 0)
 		.attr("opacity", "0.0")
 		.on("mouseover", function(d){
 			d3.select(this).attr("opacity", "0.3");
@@ -474,6 +474,7 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.attr("font-size", "0.6em")
 		.attr("font-family", "Helvetica Neue, Helvetica, Arial, sans-serif")
 		.attr("dominant-baseline", "hanging")
+		.attr("text-anchor", "middle")
 		.style("pointer-events", "none")
 		;
 
@@ -487,7 +488,7 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.append('circle')
 		.classed('change', true)
 		.attr("r", 5)
-		.attr("cx", self.xScale.bandwidth()/2.0)
+		.attr("cx", 0)
 		.attr("cy", function(d, i){
 			return i * 30 + 17;
 		})
