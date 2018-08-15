@@ -26,7 +26,7 @@ For a demo open `demo.html` on a browser.
 ### initialization
 Create object once, using the preferred options.
 ```
-var cae = new ChangesAndAlertCounts({
+var caac = new ChangesAndAlertCounts({
     container_selector: "#changesAndAlertCounts", //css selector of the container div
     height: 500, //min 300
     width: 1000, //min 400
@@ -39,7 +39,7 @@ var cae = new ChangesAndAlertCounts({
 ### first time rendering
 ```    
 var dataset = fetch_data_and_format();
-cae.render(dataset);
+caac.render(dataset);
 ```
 ### subsequest rendering upon data refresh
 Resuse the same object. Just call render() with new dataset.
@@ -47,7 +47,7 @@ Resuse the same object. Just call render() with new dataset.
 setInterval(refreshChart, 60000); //refresh the chart every minute
 function refreshChart(){
     dataset = fetch_data_and_format();
-    cae.render(dataset);
+    caac.render(dataset);
 }    
 ```
 ## dataset
