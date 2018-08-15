@@ -197,6 +197,16 @@ ChangesAndEffects.prototype.render = function(dataset){
 	}
 
 	//console.log(series);
+	self.render_bars(series);
+	self.render_severity();
+	self.render_changes_per_slot();
+	self.render_axes();
+
+	self.first_time_rendering = false;
+};
+
+ChangesAndEffects.prototype.render_bars = function(series){
+	var self = this;
 	var series_g = self.plotarea.selectAll("g.series")
 		.data(series, function(d){
 			return d.series_key;
@@ -213,40 +223,45 @@ ChangesAndEffects.prototype.render = function(dataset){
 
 	var rects = series_g_merged.selectAll("rect.bars")
 		.data(function(d){
-			return d.layer;
+			console.log(d);
+			return d.layer.map(function(e){
+				return {series_key: d.series_key, bounds: e, from:e.data.from}
+			});
 		}, function(d){
-			return d.data.from;
+			return d.from;
 		});
 
 	var rects_enter = rects.enter();
 	//console.log(rects_enter);
-	rects_enter.append("rect")
+	var rects_merged = rects_enter.append("rect")
 		.classed("bars", true)
 		.attr("x", self.w + self.margin_x * 2)
 		.attr("y", function(d, i){
-			return self.yScale(d[1]);
+			return self.yScale(d.bounds[1]);
 		})
 		.attr("height", function(d, i){
-			return self.yScale(d[0]) - self.yScale(d[1]);
+			return self.yScale(d.bounds[0]) - self.yScale(d.bounds[1]);
 		})
 		.attr("width", function(d, i){
 			return self.xScale.bandwidth();
 		})
 		.attr("opacity", "0.0")
 		.merge(rects)
-		.transition("rectsAppear")
+		;
+
+	rects_merged.transition("rectsAppear")
 		.duration(1000)
 		.delay(function(d, i){
 			return i * 20;
 		})
 		.attr("x", function(d, i){
-			return self.xScale(d.data.from);
+			return self.xScale(d.from);
 		})
 		.attr("y", function(d, i){
-			return self.yScale(d[1]);
+			return self.yScale(d.bounds[1]);
 		})
 		.attr("height", function(d, i){
-			return self.yScale(d[0]) - self.yScale(d[1]);
+			return self.yScale(d.bounds[0]) - self.yScale(d.bounds[1]);
 		})
 		.attr("opacity", "1.0")
 		;
@@ -258,12 +273,34 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.remove();
 
-	self.render_severity();
-	self.render_changes_per_slot();
-	self.render_axes();
+	rects_merged.on("mouseover", function(d){
+		var this_element = d3.select(this);
+		this_element.attr("stroke", "black");
+		this_element.attr("stroke-width", 2);
+		var xPosition = parseFloat(this_element.attr("x")) + self.margin_x;
+		var yPosition = parseFloat(this_element.attr("y"));
 
-	self.first_time_rendering = false;
+		console.log(d);
+		var message = d.series_key;
+		self.tooltip
+			.style("left", xPosition + "px")
+			.style("top", yPosition + "px")
+			.style("display", "initial")
+		self.tooltip_p
+			.selectAll("*").remove();
+		self.tooltip_p
+			.html(message)
+			;
+	})
+	.on("mouseout", function(d){
+		var this_element = d3.select(this);
+		this_element.attr("stroke", "none");
+		self.tooltip
+			.style("display", "none")
+	});
+
 };
+
 
 ChangesAndEffects.prototype.render_severity = function(){
 	var self = this;
