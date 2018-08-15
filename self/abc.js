@@ -223,7 +223,6 @@ ChangesAndEffects.prototype.render_bars = function(series){
 
 	var rects = series_g_merged.selectAll("rect.bars")
 		.data(function(d){
-			console.log(d);
 			return d.layer.map(function(e){
 				return {series_key: d.series_key, bounds: e, from:e.data.from}
 			});
@@ -280,7 +279,6 @@ ChangesAndEffects.prototype.render_bars = function(series){
 		var xPosition = parseFloat(this_element.attr("x")) + self.margin_x;
 		var yPosition = parseFloat(this_element.attr("y"));
 
-		console.log(d);
 		var message = d.series_key;
 		self.tooltip
 			.style("left", xPosition + "px")
@@ -300,7 +298,6 @@ ChangesAndEffects.prototype.render_bars = function(series){
 	});
 
 };
-
 
 ChangesAndEffects.prototype.render_severity = function(){
 	var self = this;
@@ -443,15 +440,22 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.classed('change', true)
 		.attr("xlink:href", self.change_url_formatter)
 		.attr("target", "_blank")
-		.append('rect')
-		.classed('change', true)
-		.attr("y", function(d, i){
-			return i * 30;
+		.append('circle')
+		.classed('change_hyperlink', true)
+		.attr("r", 12)
+		.attr("cy", function(d, i){
+			return i * 30 + 17;
 		})
-		.attr("x", 0)
+		.attr("cx", self.xScale.bandwidth()/2)
 		.attr("height", 30)
 		.attr("width", self.xScale.bandwidth())
 		.attr("opacity", "0.0")
+		.on("mouseover", function(d){
+			d3.select(this).attr("opacity", "0.3");
+		})
+		.on("mouseout", function(d){
+			d3.select(this).attr("opacity", "0.0");
+		})
 		;
 
 	changes_per_slot.selectAll('text.change')
@@ -494,7 +498,5 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.attr("stroke-width", "2")
 		.style("pointer-events", "none")
 		;
-
 };
-
 
