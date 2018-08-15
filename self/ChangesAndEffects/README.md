@@ -15,32 +15,39 @@ It is a javascript module to render changes, alerts and alert severities in a co
 </div>
 ```
 ## script
+### inclusions
 ```
 <script type="text/javascript" src="../d3/d3.min.js"></script>
 <script type="text/javascript" src="../moment/moment.min.js"></script>
 <script type="text/javascript" src="../moment/moment-timezone-with-data.min.js"></script>
 <script type="text/javascript" src="./ChangesAndEffects.js"></script>
-<script type="text/javascript">
-    //1. Create object once, using the preferred options.
-    var cae = new ChangesAndEffects({
-        container_selector: "#changesAndEffects", //css selector of the container div
-        height: 500, //min 300
-        width: 1000, //min 400
-        change_url_formatter: function(ticket_id){
-            return "https://www.servicenow.com/" + ticket_id;
-        },
-        series_keys: ["ModuleA", "ModuleB", "ModuleC", "ModuleD"], //Only these will be considered from the dataset's count object.
-    });
-    
-    var dataset = <fetch it from backend and format it as below>;
-    
-    //2. Render the chart for the first time
+```
+### initialization
+Create object once, using the preferred options.
+```
+var cae = new ChangesAndEffects({
+    container_selector: "#changesAndEffects", //css selector of the container div
+    height: 500, //min 300
+    width: 1000, //min 400
+    change_url_formatter: function(ticket_id){
+        return "https://www.servicenow.com/" + ticket_id;
+    },
+    series_keys: ["ModuleA", "ModuleB", "ModuleC", "ModuleD"], //Only these will be considered from the dataset's count object.
+});
+```
+### first time rendering
+```    
+var dataset = fetch_data_and_format();
+cae.render(dataset);
+```
+### subsequest rendering upon data refresh
+Resuse the same object. Just call render() with new dataset.
+``` 
+setInterval(refreshChart, 60000); //refresh the chart every minute
+function refreshChart(){
+    dataset = fetch_data_and_format();
     cae.render(dataset);
-    
-    dataset = <fetch the updated dataset from the backend>
-    //3. To refresh the chart with updated dataset, reuse the same object.
-    cae.render(dataset);
-</script>
+}    
 ```
 ## dataset
 An array of objects like below
