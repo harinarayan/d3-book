@@ -3,14 +3,30 @@ var ChangesAndEffects = function(config){
 	this.container_selector = config.container_selector || "div.changes-and-effects";
 	this.height = +config.height || 500;
 	this.width = +config.width || 1000;
+	this.change_url_formatter = config.change_url_formatter || function(d){ return "https://" + d + ".com"; }
+	
 	this.margin_x = 50;
 	this.margin_y = 50;
 	this.series_keys = config.series_keys;
 	this.first_time_rendering = true;
 	
-	this.init();
+	if(this.validate_config()){
+		this.init();
+	}
 }
 
+ChangesAndEffects.prototype.validate_config = function(){
+	var self = this;
+	if(self.height < 300 || self.width < 400){
+		self.svg = d3.select(self.container_selector)
+			.append('p')
+			.attr('color', 'red')
+			.text("height and width must be atleast 300 and 400 respectively.")
+			;
+		return false;
+	}
+	return true
+};
 ChangesAndEffects.prototype.init = function(){
 	var self = this;
 	self.svg = d3.select(self.container_selector)
@@ -55,8 +71,12 @@ ChangesAndEffects.prototype.render_axes = function(){
 	var axisGeneratorX = d3.axisBottom()
 		.scale(self.xScale)
 		.tickFormat(function(d){
-			var date = new Date(d * 1000);
-			return new String(date.getHours()).padStart(2, '0') + ":" + new String(date.getMinutes()).padStart(2, "0");
+			var m = moment(new Date(d * 1000)).tz("America/Los_Angeles");
+			if(m.hour() === 0 && m.minute() === 0){
+				return m.format("D MMM");
+			}else{
+				return m.format("HH:mm");
+			}
 		});
 
 	var axisGeneratorY = d3.axisLeft()
@@ -65,7 +85,7 @@ ChangesAndEffects.prototype.render_axes = function(){
 	if(self.first_time_rendering){
 		self.xAxis = self.svg.append("g")
 			.classed("x axis", true)
-			.attr("transform", "translate(" + self.margin_x + ", " + (self.h + self.margin_y + 20) + ")")
+			.attr("transform", "translate(" + self.margin_x + ", " + (self.h + self.margin_y + 15) + ")")
 			.call(axisGeneratorX);
 
 		self.yAxis = self.svg.append("g")
@@ -98,6 +118,11 @@ ChangesAndEffects.prototype.render_axes = function(){
 			.duration(1000)
 			.call(axisGeneratorY);
 	}
+		
+	self.xAxis.selectAll("text")
+		.attr("transform", "translate(-12, 19), rotate(270)")
+		.attr("font-size", "0.9em")
+		;
 }
 
 ChangesAndEffects.prototype.generate_series = function(){
@@ -232,7 +257,7 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("fill", function(d){
 			return self.severityColorGen(+d.severity);
 		})
-		.attr("height", 20)
+		.attr("height", 15)
 		.attr("width", self.xScale.bandwidth())
 		.attr("y", 1)
 		.attr("x", self.w + self.margin_x * 2)
@@ -321,9 +346,7 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.enter()
 		.append('a')
 		.classed('change', true)
-		.attr("xlink:href", function(d){
-			return "https://www.google.com/" + d;
-		})
+		.attr("xlink:href", self.change_url_formatter)
 		.attr("target", "_blank")
 		.append('rect')
 		.classed('change', true)
@@ -333,7 +356,7 @@ ChangesAndEffects.prototype.render_changes = function(changes_per_slot){
 		.attr("x", 0)
 		.attr("height", 30)
 		.attr("width", self.xScale.bandwidth())
-		.attr("opacity", "0.1")
+		.attr("opacity", "0.0")
 		;
 
 	changes_per_slot.selectAll('text.change')

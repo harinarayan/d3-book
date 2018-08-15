@@ -7,14 +7,21 @@
     <body>
 	<div id="changesAndEffects" tyle="border:1px solid blue;">
 	</div>
+	<small><small>Timezone is PT unless otherwise specified</small></small>
+	<br>
 	<button type="button" id="refresh">Refresh</button> 
         <script type="text/javascript" src="./d3/d3.min.js"></script>
+        <script type="text/javascript" src="./moment/moment.min.js"></script>
+        <script type="text/javascript" src="./moment/moment-timezone-with-data.min.js"></script>
         <script type="text/javascript" src="./abc.js"></script>
         <script type="text/javascript">
 		var cae = new ChangesAndEffects({
 			container_selector: "#changesAndEffects",
 			height: 500,
 			width: 1000,
+			change_url_formatter: function(ticket_id){
+				return "https://www.servicenow.com/" + ticket_id;
+			},
 			series_keys: ["A", "B", "C", "D"],
 		});
 		
