@@ -5,18 +5,29 @@
         <title>D3 Page Template</title>
     </head>
     <body>
-	<div id="changesAndEffects" tyle="border:1px solid blue;">
+	<div id="changesAndEffectsLarge" style="display:inline-block;">
 	</div>
+	<div id="changesAndEffectsSmall" style="display:inline-block;">
+	</div>
+	<div style="display:inline-block;width:1000px;text-align:center;">
+		Large
+	</div>
+	<div style="display:inline-block;width:400px;text-align:center;">
+		Small
+	</div>
+	<br>
 	<small><small>Timezone is PT unless otherwise specified</small></small>
 	<br>
-	<button type="button" id="refresh">Refresh</button> 
+	<br>
+	<button style="padding:10px;font-weight:bold;" type="button" id="refresh">Click to simulate data refresh, using randomized data!</button> 
+	<p style="color:maroon;font-weight:bold;">And, move your mouse around. This graph is interactive!</p> 
         <script type="text/javascript" src="./d3/d3.min.js"></script>
         <script type="text/javascript" src="./moment/moment.min.js"></script>
         <script type="text/javascript" src="./moment/moment-timezone-with-data.min.js"></script>
         <script type="text/javascript" src="./abc.js"></script>
         <script type="text/javascript">
-		var cae = new ChangesAndEffects({
-			container_selector: "#changesAndEffects",
+		var cae_large = new ChangesAndEffects({
+			container_selector: "#changesAndEffectsLarge",
 			height: 500,
 			width: 1000,
 			change_url_formatter: function(ticket_id){
@@ -24,6 +35,16 @@
 			},
 			series_keys: ["A", "B", "C", "D"],
 		});
+		var cae_small = new ChangesAndEffects({
+			container_selector: "#changesAndEffectsSmall",
+			height: 300,
+			width: 400,
+			change_url_formatter: function(ticket_id){
+				return "https://www.servicenow.com/" + ticket_id;
+			},
+			series_keys: ["A", "B", "C", "D"],
+		});
+	
 		
 		var dataset = [
 			{ "from":1533081600, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 10, C: 15, D: 10}, "changes":["CHG1234", "CHG2345"] },
@@ -47,41 +68,62 @@
 			{ "from":1533097800, "severity": {"worst":"1", "details":{"1":["Comp1", "Comp2"]}}, "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":["CHG1234"] },
 			{ "from":1533098700, "severity": {"worst":"0", "details":{}}, "counts": {A: 0, B: 10, C: 15, D: 8}, "changes":[] },
 		]
-		cae.render(dataset);
+		cae_large.render(dataset);
+		cae_small.render(dataset);
 	
 		function getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
 		}
 
 		document.getElementById("refresh").addEventListener("click", function(event){
-			dataset.shift();
-			var new_item = {
-					"from":(dataset[dataset.length-1].from + 15*60),
-					"severity": {"worst":getRandomInt(4).toString(), "details":{}},
-					"counts": {A: getRandomInt(10)*2, B: getRandomInt(10)*2, C: getRandomInt(10)*3, D: getRandomInt(10)},
-					"changes":[]
-					};
-			switch(new_item.severity.worst){
-				case "1":	
-					new_item.severity.details = {"1":["Comp1", "Comp2"]};
-					break;
-				case "2":	
-					new_item.severity.details = {"1":["Comp1"], "2":["Comp2"]};
-					break;
-				case "3":	
-					new_item.severity.details = {"1":["Comp1"], "2":["Comp2", "Comp8"], "3":["Comp15"]};
-					break;
-				default:
-					new_item.severity.details = {}
-					break;
-			};
-			for(var i=0; i<getRandomInt(5); i++){
-				new_item.changes.push("CHG" + getRandomInt(9999));
+			if(getRandomInt(100) < 40){
+				var last_data = dataset[dataset.length-1];
+				switch(getRandomInt(4)){
+					case 1:
+						last_data.counts.A += 4; break;
+					case 2:
+						last_data.counts.B += 4; break;
+					case 3:
+						last_data.counts.C += 4; break;
+					case 4:
+						last_data.counts.D += 4; break;
+					default:
+						break;
+				}
+				if(getRandomInt(2) == 1){
+					last_data.changes.push("CHG" + getRandomInt(9999));
+				}
+			}else{
+				dataset.shift();
+				var new_item = {
+						"from":(dataset[dataset.length-1].from + 15*60),
+						"severity": {"worst":getRandomInt(4).toString(), "details":{}},
+						"counts": {A: getRandomInt(10)*2, B: getRandomInt(10)*2, C: getRandomInt(10)*3, D: getRandomInt(10)},
+						"changes":[]
+						};
+				switch(new_item.severity.worst){
+					case "1":	
+						new_item.severity.details = {"1":["Comp1", "Comp2"]};
+						break;
+					case "2":	
+						new_item.severity.details = {"1":["Comp1"], "2":["Comp2"]};
+						break;
+					case "3":	
+						new_item.severity.details = {"1":["Comp1"], "2":["Comp2", "Comp8"], "3":["Comp15"]};
+						break;
+					default:
+						new_item.severity.details = {}
+						break;
+				};
+				for(var i=0; i<getRandomInt(5); i++){
+					new_item.changes.push("CHG" + getRandomInt(9999));
+				}
+				//console.log(new_item);
+				dataset.push(new_item);
 			}
-			//console.log(new_item);
-			dataset.push(new_item);
 
-			cae.render(dataset);
+			cae_large.render(dataset);
+			cae_small.render(dataset);
 		});
         </script>
     </body>

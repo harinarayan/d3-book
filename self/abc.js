@@ -33,9 +33,10 @@ ChangesAndEffects.prototype.init = function(){
 		.append("svg")
 		.attr("height", self.height)
 		.attr("width", self.width)
-		.style("border", "1px solid red")
 		;
 
+	self.container_top = d3.select(self.container_selector).style("top");
+	self.container_left = d3.select(self.container_selector).style("left");
 	self.h = self.height - (2*self.margin_x);
 	self.w = self.width - (2*self.margin_y);
 	self.plotarea = self.svg.append("g")
@@ -74,7 +75,7 @@ ChangesAndEffects.prototype.init = function(){
 		.style("background-color", "beige")
 		.style("border", "1px solid black")
 		.style("border-radius", "5px")
-		.style("position", "absolute")
+		.style("position", "fixed")
 		.style("pointer-events", "none")
 		.style("display", "none")
 		;
@@ -276,13 +277,11 @@ ChangesAndEffects.prototype.render_bars = function(series){
 		var this_element = d3.select(this);
 		this_element.attr("stroke", "black");
 		this_element.attr("stroke-width", 2);
-		var xPosition = parseFloat(this_element.attr("x")) + self.margin_x;
-		var yPosition = parseFloat(this_element.attr("y"));
 
 		var message = d.series_key;
 		self.tooltip
-			.style("left", xPosition + "px")
-			.style("top", yPosition + "px")
+			.style("left", (d3.event.pageX) + "px")
+			.style("top", (d3.event.pageY) + "px")
 			.style("display", "initial")
 		self.tooltip_p
 			.selectAll("*").remove();
@@ -350,8 +349,6 @@ ChangesAndEffects.prototype.render_severity = function(){
 		var this_element = d3.select(this);
 		this_element.attr("stroke", "black");
 		this_element.attr("stroke-width", 2);
-		var xPosition = parseFloat(this_element.attr("x")) + self.margin_x;
-		var yPosition = parseFloat(this_element.attr("y")) / 2 + self.h;
 
 		var message = "None";
 		if(Object.entries(d.severity.details).length){
@@ -363,8 +360,8 @@ ChangesAndEffects.prototype.render_severity = function(){
 		}
 		
 		self.tooltip
-			.style("left", xPosition + "px")
-			.style("top", yPosition + "px")
+			.style("left", (d3.event.pageX) + "px")
+			.style("top", (d3.event.pageY) + "px")
 			.style("display", "initial")
 		self.tooltip_p
 			.selectAll("*").remove();
