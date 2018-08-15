@@ -51,7 +51,7 @@
 			var new_item = {
 					"from":(dataset[dataset.length-1].from + 15*60),
 					"severity": getRandomInt(4),
-					"counts": {A: getRandomInt(10), B: getRandomInt(10), C: getRandomInt(10), D: getRandomInt(10)},
+					"counts": {A: getRandomInt(10)*2, B: getRandomInt(10)*2, C: getRandomInt(10)*3, D: getRandomInt(10)},
 					"changes":[]
 					};
 			for(var i=0; i<getRandomInt(5); i++){

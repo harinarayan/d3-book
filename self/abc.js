@@ -28,21 +28,25 @@ ChangesAndEffects.prototype.init = function(){
 		.attr("width", self.w)
 		.attr("transform", "translate(" + self.margin_x + ", " + self.margin_y + ")");
 
-	self.colorGen = d3.scaleOrdinal(
-	[
-	  "#8dd3c7",
-	  "#D2B48C",
-	  "#bebada",
-	  "#fb8072",
-	  "#80b1d3",
-	  "#fdb462",
-	  "#b3de69",
-	  "#fccde5",
-	  "#d9d9d9",
-	  "#bc80bd",
-	  "#ccebc5",
-	  "#ffed6f"
-	]);
+	if(self.series_keys.length <= 12){
+		self.colorGen = d3.scaleOrdinal(
+		[
+		  "#8dd3c7",
+		  "#D2B48C",
+		  "#bebada",
+		  "#fb8072",
+		  "#80b1d3",
+		  "#fdb462",
+		  "#b3de69",
+		  "#fccde5",
+		  "#d9d9d9",
+		  "#bc80bd",
+		  "#ccebc5",
+		  "#ffed6f"
+		]);
+	}else{
+		self.colorGen = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, self.series_keys.length));
+	}
 	self.severityColorGen = d3.scaleOrdinal(["green", "gold", "orange", "red"]);
 }
 
@@ -146,6 +150,12 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("x", function(d, i){
 			return self.xScale(d.data.from);
 		})
+		.attr("y", function(d, i){
+			return self.yScale(d[1]);
+		})
+		.attr("height", function(d, i){
+			return self.yScale(d[0]) - self.yScale(d[1]);
+		})
 		.attr("opacity", "1.0")
 		;
 
@@ -207,9 +217,6 @@ ChangesAndEffects.prototype.render = function(dataset){
 	var changes_per_bar_g = self.changes_g.selectAll("g")
 		.data(self.dataset.map(function(d){
 			return {changes: d.changes, from:d.from};
-		})
-		.filter(function(d){
-			return d.changes.length > 0;
 		}), function(d){
 			return d.from;
 		});
@@ -217,7 +224,12 @@ ChangesAndEffects.prototype.render = function(dataset){
 	var changes_per_bar_g_merged = changes_per_bar_g_enter.append("g")
 		.classed("changes_per_bar_g", true)
 		.merge(changes_per_bar_g);
-	changes_per_bar_g.exit().remove();
+	changes_per_bar_g.exit()
+		.transition("changesPerBarExit")
+                .duration(1000)
+                .attr("x", -100)
+                .attr("opacity", "0.0")
+                .remove();
 
 	var changes_circles = changes_per_bar_g_merged.selectAll("circle")
 		.data(function(d){
@@ -227,6 +239,8 @@ ChangesAndEffects.prototype.render = function(dataset){
 		});
 	var changes_circles_enter = changes_circles.enter()
 		.append("circle")
+		.attr("stroke", "white")
+		.attr("stroke-width", "2")
 		.attr("r", 5)
 		.attr("cx", self.w + self.margin_x * 2)
 		.attr("cy", function(d, i){
@@ -236,7 +250,7 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.merge(changes_circles)
 		.transition("changeCircleAppear")
 		.duration(1000)
-		.delay(function(d, i){
+		.delay(function(d, i, node){
 			return i * 20;
 		})
 		.attr("cx", function(d){
@@ -251,7 +265,6 @@ ChangesAndEffects.prototype.render = function(dataset){
 		.attr("opacity", "0.0")
 		.remove();
 		
-	
 	var changes_labels = changes_per_bar_g_merged.selectAll("text")
 		.data(function(d){
 			return d.changes;
@@ -264,7 +277,8 @@ ChangesAndEffects.prototype.render = function(dataset){
 			return d;
 		})
 		.style("text-anchor", "middle")
-		.style("font-size", "0.6em")
+		.style("font-size", "0.5em")
+		.style("font-family", "Helvetica Neue, Helvetica, Arial, sans-serif")
 		.attr("x", self.w + self.margin_x * 2)
 		.attr("y", function(d, i){
 			return self.h - (i+1)*20 - 7;
@@ -314,15 +328,17 @@ ChangesAndEffects.prototype.render = function(dataset){
 		self.svg.append("text")
 			.attr("x", 20)
 			.attr("y", 40)
-			.style("font-size", "0.8em")
+			.style("font-size", "0.7em")
 			.style("font-weight", "bold")
+			.style("font-family", "Helvetica Neue, Helvetica, Arial, sans-serif")
 			.text("Alert count");
 
 		self.svg.append("text")
 			.attr("x", 4)
 			.attr("y", self.h + self.margin_y + 14)
-			.style("font-size", "0.8em")
+			.style("font-size", "0.7em")
 			.style("font-weight", "bold")
+			.style("font-family", "Helvetica Neue, Helvetica, Arial, sans-serif")
 			.text("Severity");
 	}else{
 		self.xAxis
