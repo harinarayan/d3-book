@@ -5,22 +5,24 @@
         <title>D3 Page Template</title>
     </head>
     <body>
-	<div id="changesAndEffectsLarge" style="display:inline-block;">
+	<div style="width:1500px;">
+		<div id="changesAndEffectsLarge" style="display:inline-block;">
+		</div>
+		<div id="changesAndEffectsSmall" style="display:inline-block;">
+		</div>
+		<div style="display:inline-block;width:1000px;text-align:center;">
+			Large
+		</div>
+		<div style="display:inline-block;width:400px;text-align:center;">
+			Small
+		</div>
+		<br>
+		<small><small>Timezone is PT unless otherwise specified</small></small>
+		<br>
+		<br>
+		<button style="padding:10px;font-weight:bold;margin-left:auto;width:1400px;font-size:1.2em;" type="button" id="refresh">Click to simulate data refresh, using randomized data!</button> 
+		<p style="color:maroon;font-weight:bold;">This graph is interactive! Move your mouse around for tooltips. Click on the change ticket circle to go to the ticket page on service now.</p> 
 	</div>
-	<div id="changesAndEffectsSmall" style="display:inline-block;">
-	</div>
-	<div style="display:inline-block;width:1000px;text-align:center;">
-		Large
-	</div>
-	<div style="display:inline-block;width:400px;text-align:center;">
-		Small
-	</div>
-	<br>
-	<small><small>Timezone is PT unless otherwise specified</small></small>
-	<br>
-	<br>
-	<button style="padding:10px;font-weight:bold;" type="button" id="refresh">Click to simulate data refresh, using randomized data!</button> 
-	<p style="color:maroon;font-weight:bold;">And, move your mouse around. This graph is interactive!</p> 
         <script type="text/javascript" src="./d3/d3.min.js"></script>
         <script type="text/javascript" src="./moment/moment.min.js"></script>
         <script type="text/javascript" src="./moment/moment-timezone-with-data.min.js"></script>
