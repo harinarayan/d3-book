@@ -1,4 +1,4 @@
-# ChangesAndEffects
+# ChangesAndAlertCounts
 It is a javascript module to render changes to site, alerts counts and alert severities against time dimension in a composite chart.
 
 Features:
@@ -12,7 +12,7 @@ For a demo open `demo.html` on a browser.
 # Usage
 ## html
 ```
-<div id="changesAndEffects">
+<div id="changesAndAlertCounts">
 </div>
 ```
 ## script
@@ -21,13 +21,13 @@ For a demo open `demo.html` on a browser.
 <script type="text/javascript" src="../d3/d3.min.js"></script>
 <script type="text/javascript" src="../moment/moment.min.js"></script>
 <script type="text/javascript" src="../moment/moment-timezone-with-data.min.js"></script>
-<script type="text/javascript" src="./ChangesAndEffects.js"></script>
+<script type="text/javascript" src="./ChangesAndAlertCounts.js"></script>
 ```
 ### initialization
 Create object once, using the preferred options.
 ```
-var cae = new ChangesAndEffects({
-    container_selector: "#changesAndEffects", //css selector of the container div
+var cae = new ChangesAndAlertCounts({
+    container_selector: "#changesAndAlertCounts", //css selector of the container div
     height: 500, //min 300
     width: 1000, //min 400
     change_url_formatter: function(ticket_id){
