@@ -1,12 +1,13 @@
 # ChangesAndEffects
-It is a javascript module to render changes, alerts and alert severities in a composite chart
-  - Type some Markdown on the left
-  - See HTML in the right
-  - Magic
+It is a javascript module to render changes to site, alerts counts and alert severities against time dimension in a composite chart.
 
-# Dependencies
-  - d3.js (Version 5.4)
-  - Moment.js for timezone manipulation
+Features:
+ - Automatically adapts and adjusts according to data
+ - Customizable dimension
+ - Tooltips
+ - Opens ticket page using hyperlink
+
+For a demo open `demo.html` on a browser.
 
 # Usage
 ## html
@@ -50,7 +51,7 @@ function refreshChart(){
 }    
 ```
 ## dataset
-An array of objects like below
+An array of objects like below. Each object representing all that happened in a timeslot `time`.
 ```
 var dataset = [
     {
@@ -74,4 +75,9 @@ var dataset = [
     ...,
 ];    
 ```
+
+# Dependencies
+  - d3.js (Version 5.4)
+  - Moment.js for timezone manipulation
+
 
